@@ -1,6 +1,6 @@
 'use strict';
 
-function getDogImage(userInput) {
+function getRepos(userInput) {
   fetch(userInput)
     .then(function(response) {
       return response.json()
@@ -9,7 +9,6 @@ function getDogImage(userInput) {
       console.log(responseJson.status)
       if (responseJson.status == 'error') {
         $('.errorMessage').replaceWith(`<p class='errorMessage'>${responseJson.code} ${responseJson.message}</p>`);
-        $('.results-img').addClass('hidden');
         $('.results-title').addClass('hidden');
         $('.results').removeClass('hidden');
       } else {
@@ -24,16 +23,16 @@ function getDogImage(userInput) {
 
 function displayResults(responseJson) {
   console.log(responseJson)
-  $('.results-img').replaceWith(`<img src="${responseJson.message}" class="results-img" alt="A picture of a dog">`);
+  $('.results-repo').replaceWith(`<p>${responseJson.value}</p>`);
   $('.results').removeClass('hidden');
 }
 
 function watchForm() {
   $('form').submit(event => {
     event.preventDefault();
-    let lowerCaseInput = document.getElementById('userInput').value.toLowerCase();
-    let finalInput = `https://dog.ceo/api/breed/${lowerCaseInput}/images/random`;
-    getDogImage(finalInput);
+    let userInput = document.getElementById('userInput').value;
+    let finalInput = `https://api.github.com/users/${userInput}/repos`; 
+    getRepos(finalInput);
   });
 }
 
