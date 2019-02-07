@@ -1,14 +1,15 @@
 'use strict';
 
-function getRepos(userInput) {
-  fetch(userInput)
+function getRepos(userInput, options) {
+  fetch(userInput, options)
     .then(function(response) {
       return response.json()
     })
     .then(function(responseJson) {
-      console.log(responseJson.status)
-      if (responseJson.status == 'error') {
-        $('.errorMessage').replaceWith(`<p class='errorMessage'>${responseJson.code} ${responseJson.message}</p>`);
+      console.log(responseJson)
+      if (responseJson.message === 'Not Found') {
+        $('.results-repo').empty();
+        $('.errorMessage').replaceWith(`<p class='errorMessage'>${responseJson.message}. Please try again.</p>`);
         $('.results-title').addClass('hidden');
         $('.results').removeClass('hidden');
       } else {
@@ -16,14 +17,15 @@ function getRepos(userInput) {
         displayResults(responseJson);
       }
     })
-    //.then(responseJson => 
-      //displayResults(responseJson))
-    .catch(error => alert('Something went wrong. Try again later.'));
+    .catch(error => alert('Something went wrong. Please try again later.'));
 }
 
 function displayResults(responseJson) {
-  console.log(responseJson)
-  $('.results-repo').replaceWith(`<p>${responseJson.value}</p>`);
+  $('.results-repo').empty();
+  $('.results-title').removeClass('hidden');
+  for (let i = 0; i < responseJson.length; i++) {
+    $('.results-repo').append(`<p>Repo Name: ${responseJson[i].name} <a href="${responseJson[i].url}">Link</a></p>`);
+  }
   $('.results').removeClass('hidden');
 }
 
